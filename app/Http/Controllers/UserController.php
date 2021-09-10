@@ -26,8 +26,83 @@ class UserController extends Controller
       if(!$staff || !Hash::check($req->password,$staff->password))
       {
          return ["error"=>"Email or password is not match"];
+      } 
+      else{
+        if ($staff->stafftype=="nurse")
+        {
+          $role = 'nurse';
+        }
+        else if ($staff->stafftype=="metron")
+        {
+          $role = 'metron';
+        }
+        else if ( $staff->stafftype=="attendant")
+        {
+          $role = 'attendant';
+        }
+        else if ( $staff->stafftype=="pharmacist")
+        {
+          $role = 'pharmacist';
+        }
+        else if( $staff->stafftype=="accountant")
+        {      
+          $role = 'accountant';
+        }
+        else if ($staff->stafftype=="receptionist")
+        {
+          $role = 'receptionist';
+        }
+        else if( $staff->stafftype=="labtechnician")
+        {
+          $role = 'labtechnician';
+        }
+        else if( $staff->stafftype=="radiologist")
+        {
+          $role = 'radiologist';
+        }
+        else {
+          $role = 'eservice';
+        }
+
+        
+        return response()->json([
+          'staff'=>$staff,
+          'role'=>$role,
+        ]);
+        
       }
-      return $staff;
+    
+    }
+    
+    function update (Request $request) {
+      
+      $staff = Staff::where('id', $request->id)
+        ->update([
+        'name' => $request->name,
+        'phone' => $request->phone,
+        'email' => $request->email
+        ]);
+
+        $neww = Staff::find($request->id);
+        
+        return response()->json([
+          'staff'=>$neww,
+          'role'=>$neww->stafftype
+        ]);
+    }
+
+    function del ($id) {
+
+      $del = Staff::find($id);
+
+      if ($del->id) {
+
+        $del->delete();
+      } else {
+        $del = 'null';
+      }
+
+      return $del;
     }
 }
     
